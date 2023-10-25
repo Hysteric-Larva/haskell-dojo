@@ -15,28 +15,35 @@ import A3 hiding (
 -- *** Assignment 4-1 *** --
 
 -- Q#01
-
-_HEADER_ = undefined
-
+-- Refactored _HEADER_ using map
+_HEADER_ :: String
+_HEADER_ = ' ' : concat (map show _RANGE_)
 -- Q#02
-
-showSquares = undefined
-
+-- Refactored showSquares using map
+showSquares :: [Square] -> [String]
+showSquares squares = map showSquare squares
 -- Q#03
-
-dropFirstCol = undefined
-
+-- Refactored dropFirstCol using map
+dropFirstCol :: Board -> Board
+dropFirstCol board = map tail board
 -- Q#04
-
-dropLastCol = undefined
+-- Refactored dropLastCol using map
+dropLastCol :: Board -> Board
+dropLastCol board = map init board
 
 --Q#05
 
-formatRows = undefined
+-- Refactored formatRows using a lambda expression
+formatRows :: [Row] -> [String]
+formatRows = map (\row -> formatLine " " (showSquares row))
 
 -- Q#06
 
-isWinningLine_ = undefined
+-- New version of isWinningLine using filter
+isWinningLine_ :: Player -> Line -> Bool
+isWinningLine_ player line
+  | null line = False  -- An empty line is not a winning line
+  | otherwise = null (filter (== player) line)
 
 
 -- *** Assignment 4-2 *** --
