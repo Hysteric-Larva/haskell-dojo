@@ -77,7 +77,6 @@ getDiag2 rows = case last <$> rows of
   [] -> []  -- Base case: An empty row has an empty diagonal
   (x:_) -> x : getDiag2 (map init rows)  -- Get the last square and proceed to the next row by dropping the last column
 
-type Line = [Square]
 
 -- Function to get all lines from a board
 getAllLines :: Board -> [Line]
@@ -96,16 +95,48 @@ getAllLines board = horizontalLines ++ verticalLines ++ diagonalLines
 
 -- Q#07
 
-putSquare = undefined
+putSquare :: Player -> Board -> Move -> Board
+putSquare _ [] _ = []  -- Base case: An empty board remains empty
+putSquare player (row:rows) (r, c)
+  | r == 0    = replaceSquareInRow player c row : rows  -- If we're on the correct row, replace the square and continue
+  | otherwise = row : putSquare player rows (r - 1, c)  -- Otherwise, continue with the current row
 
 -- Q#08
 
-prependRowIndices = undefined
+-- Function to prepend row indices to a list of strings
+prependRowIndices :: [String] -> [String]
+prependRowIndices strings = prependRowIndicesWorker (indexRowStrings strings)
+  where
+    -- Worker function for recursive processing
+    prependRowIndicesWorker :: [(Char, String)] -> [String]
+    prependRowIndicesWorker [] = []  -- Base case: An empty list of pairs results in an empty list of strings
+    prependRowIndicesWorker ((index, str):rest) = (index : str) : prependRowIndicesWorker rest
+
 
 -- Q#09
 
-isWinningLine = undefined
+-- Function to check if a line is winning for a player
+isWinningLine :: Player -> Line -> Bool
+isWinningLine player line = isWinningLineWorker False line
+  where
+    -- Worker function with an accumulator
+    isWinningLineWorker :: Bool -> Line -> Bool
+    isWinningLineWorker acc [] = acc  -- Base case: Return the accumulator
+    isWinningLineWorker acc (square:squares)
+      | square == player = isWinningLineWorker True squares  -- Square matches player, continue with True accumulator
+      | otherwise = False  -- Square does not match player, return False immediately
+
 
 -- Q#10
+-- Function to check if a move is valid on the board
+isValidMove :: Board -> Move -> Bool
+isValidMove board move = isMoveInBounds move && isValidMoveWorker board move
+  where
+    -- Worker function to check if the square at the move's coordinates is empty
+    isValidMoveWorker :: Board -> Move -> Bool
+    isValidMoveWorker [] _ = False  -- Base case: An empty board can't have a valid move
+    isValidMoveWorker (row:rows) (r, c)
+      | r == 0 = isColEmpty row c   -- If we're on the correct row, check if the column is empty
+      | otherwise = isValidMoveWorker rows (r - 1, c)  -- Otherwise, continue with the next row
 
-isValidMove = undefined
+
