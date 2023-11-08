@@ -16,7 +16,7 @@ showInts (x:xs) = show x : showInts xs  -- Convert the head of the list to a str
 
 
 _HEADER_ :: String
-_HEADER_ = formatLine " " (showInts _RANGE_)
+_HEADER_ = formatLine _SEP_ (showInts _RANGE_)
 
 -- Q#02
 
@@ -30,7 +30,7 @@ showSquares (x:xs) = showSquare x : showSquares xs  -- Convert the head of the l
 
 formatRows :: [Row] -> [String]
 formatRows [] = []  -- Base case: an empty list results in an empty list of strings
-formatRows (row:rows) = formatLine " " (showSquares row) : formatRows rows  -- Format the current row and recursively process the rest
+formatRows (row:rows) = formatLine _SEP_ (showSquares row) : formatRows rows  -- Format the current row and recursively process the rest
 
 
 -- Q#04
@@ -39,7 +39,7 @@ isColEmpty :: Row -> Int -> Bool
 -- Base pattern 1: If the row is empty, no square is present, so return False
 isColEmpty [] _ = False
 -- Base pattern 2: If the index is 0 and the first square is empty, return True
-isColEmpty (x:_) 0 = x == Empty
+isColEmpty (x:_) 0 = x == E
 -- Recursive pattern: Check the rest of the row with a decremented index
 isColEmpty (_:xs) col = isColEmpty xs (col - 1)
 
@@ -64,18 +64,25 @@ dropLastCol rows = map init rows  -- Use `map` and `init` to remove the last squ
 type Diagonal = [Square]
 
 -- Function to get the diagonal from top left to bottom right
-getDiag1 :: Board -> Diagonal
+getDiag1 :: Board -> Line
 getDiag1 [] = []  -- Base case: An empty board has an empty diagonal
 getDiag1 (row:rows) = case row of
   [] -> []  -- Base case: An empty row has an empty diagonal
   (x:_) -> x : getDiag1 (map tail rows)  -- Get the first square and proceed to the next row by dropping the first column
 
 -- Function to get the diagonal from top right to bottom left
-getDiag2 :: Board -> Diagonal
+getDiag2 :: Board -> Line
 getDiag2 [] = []  -- Base case: An empty board has an empty diagonal
-getDiag2 rows = case last <$> rows of
+getDiag2 rows = case reverse rows of
   [] -> []  -- Base case: An empty row has an empty diagonal
-  (x:_) -> x : getDiag2 (map init rows)  -- Get the last square and proceed to the next row by dropping the last column
+  (row:rows) -> case  row of
+    [] -> []  -- Base case: An empty row has an empty diagonal
+    (x:_) -> x : getDiag2 (map init rows)  -- Get the last square and proceed to the next row by dropping the last column
+
+
+
+
+
 
 
 -- Function to get all lines from a board

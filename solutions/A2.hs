@@ -31,14 +31,14 @@ readDigit c
 -- Q#04
 
 _EMPTY_ROW_ :: Row
-_EMPTY_ROW_ = replicate _SIZE_ Empty
+_EMPTY_ROW_ = replicate _SIZE_ E
 
 _EMPTY_BOARD_ :: Board
 _EMPTY_BOARD_ = replicate _SIZE_ _EMPTY_ROW_
 -- Q#05
 
 isTied :: Board -> Bool
-isTied board = all (/= Empty) (concat board)
+isTied board = all (/= E) (concat board)
 
 _TIED_BOARD_ :: Board
 _TIED_BOARD_ = [
@@ -55,7 +55,7 @@ indexRowStrings strings = zipWith (\index str -> (chr (ordA + index), str)) [0..
 
 -- Q#07
 formatLine :: String -> [String] -> String
-formatLine sep strings = _SEP_ ++ intercalate sep strings ++ _SEP_
+formatLine sep strings = _SEP_ ++ intercalate sep strings  ++ _SEP_
 
 
 -- *** Assignment 2-2 *** --
@@ -66,7 +66,7 @@ isMoveInBounds (row, col) = and [row >= 0, row < _SIZE_, col >= 0, col < _SIZE_]
 
 -- Q#09
 stringToMove :: String -> Move
-stringToMove [col, row] | length [col, row] == 2 = (convertRowIndex row, readDigit col)
+stringToMove [col, row] | length [col, row] == 2 = (convertRowIndex col, readDigit row)
 stringToMove _ = _INVALID_MOVE_
 
 -- Q#10
